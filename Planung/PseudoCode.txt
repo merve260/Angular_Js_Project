@@ -1,0 +1,53 @@
+// --- Startpunkt: User oder Admin öffnet die Anwendung ---
+
+IF Benutzer ist nicht registriert THEN
+    Benutzer klickt auf "Registrieren"
+    Formular wird ausgefüllt
+    System erstellt neuen Account mit Rolle (user)
+ENDIF
+
+Benutzer klickt auf "Login"
+Benutzer gibt E-Mail und Passwort ein
+System prüft Authentifizierung
+
+IF Login erfolgreich THEN
+    IF Rolle == "admin" THEN
+        Weiterleitung zur Benutzer-Seite
+    ELSE
+        Weiterleitung zum persönlichen Dashboard
+    ENDIF
+ELSE
+    Fehlernachricht anzeigen
+ENDIF
+
+
+// --- Benutzer-Seite (nur für Admin) ---
+
+Admin kann:
+    → Neue Benutzer hinzufügen (mit Rolle admin oder user)
+    → Benutzerliste anzeigen
+        → Benutzer nach ID oder Name filtern
+        → Benutzer bearbeiten oder löschen
+
+
+// --- Dashboard-Funktionen (für User & Admin) ---
+
+// Gemeinsame Aktionen:
+Benutzer kann:
+    - Profil bearbeiten
+    - Abmelden
+
+// Eventbezogene Aktionen:
+Benutzer kann:
+    - Eigene Events anzeigen
+        - Event bearbeiten
+        - Event löschen
+    → Öffentliche Events anzeigen
+        - An öffentlichen Events teilnehmen (falls Platz vorhanden)
+
+// Nur Admin:
+IF Rolle == "admin" THEN
+    Admin kann:
+        - Öffentliche Events erstellen (wenn Datum, Uhrzeit & Raum frei)
+        - Öffentliche Events bearbeiten (nur eigene)
+ENDIF

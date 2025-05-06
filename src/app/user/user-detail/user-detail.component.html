@@ -1,0 +1,63 @@
+<h2>Benutzerdetails</h2>
+
+<!-- Görüntüleme Modu -->
+<div *ngIf="!isEditing && user" class="user-detail-container">
+  <div class="user-avatar">
+    <img [src]="user.avatar" alt="{{ user.name }}" />
+  </div>
+
+  <div class="user-info">
+    <h3>{{ user.name }}</h3>
+    <p><span class="label">ID:</span> {{ user.id }}</p>
+    <p><span class="label">📧 E-Mail:</span> {{ user.email }}</p>
+    <p><span class="label">📝 Beschreibung:</span> {{ user.beschreibung }}</p>
+
+    <div class="action-buttons">
+      <button (click)="bearbeiten()">Bearbeiten</button>
+      <button (click)="loeschen()" class="delete">Benutzer löschen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Düzenleme Modu -->
+<div *ngIf="isEditing && user" class="edit-form">
+  <h3>Benutzer bearbeiten</h3>
+
+  <div class="form-grid">
+    <label>
+      Name:
+      <input [(ngModel)]="editData.name" />
+    </label>
+
+    <label>
+      Avatar URL:
+      <input [(ngModel)]="editData.avatar" />
+    </label>
+
+    <label class="full-width">
+      Beschreibung:
+      <textarea [(ngModel)]="editData.beschreibung"></textarea>
+    </label>
+  </div>
+
+  <label class="full-width">
+    Neue E-Mail (optional):
+    <input type="email" [(ngModel)]="editData.email" />
+  </label>
+  
+  <label>Neues Passwort (optional):</label><br />
+<div class="password-wrapper">
+  <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="editData.password" />
+  <button type="button" class="eye-btn" (click)="togglePasswordVisibility()">
+    {{ showPassword ? '🚫' : '👁' }}
+  </button>
+</div>
+  <small *ngIf="editData.password.length > 0 && editData.password.length < 6" style="color: red;">
+    Mindestens 6 Zeichen erforderlich
+  </small>
+
+  <div class="action-buttons">
+    <button (click)="speichern()"> Speichern</button>
+    <button (click)="abbrechen()">Abbrechen</button>
+  </div>
+</div>

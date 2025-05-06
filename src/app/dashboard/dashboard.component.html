@@ -1,0 +1,192 @@
+
+<div class="dashboard-wrapper">
+  <div class="dashboard-header-box">
+    <h1 class="dashboard-title">DASHBOARD</h1>
+  <div class="welcome-box">
+    <img [src]="avatarUrl" alt="Avatar" class="avatar-small">
+    <h2>Willkommen, {{ isAdmin ? 'Admin' : 'User' }} {{ userName }} </h2>
+  </div>
+  <div class="dashboard-grid">
+
+    <!-- Linke Seite: Navigation + Event erstellen -->
+    <section class="left-panel">
+      <div class="nav-button-group">
+        <button class="nav-btn" (click)="showProfileForm = !showProfileForm">Profil bearbeiten</button>
+        <button class="nav-btn logout" (click)="logout()">Abmelden</button>
+        <button class="nav-btn" (click)="showOnlyStarred = !showOnlyStarred">
+          {{ showOnlyStarred ? 'Alle Events anzeigen' : ' Nur Favoriten anzeigen' }}
+        </button>
+        <button *ngIf="isAdmin" class="nav-btn" (click)="router.navigate(['/benutzer'])">Zur Benutzerliste</button>
+      </div>
+      <h3>➕ Event erstellen</h3>
+      <div class="add-task">
+        <input type="text" placeholder="Titel des Events" [(ngModel)]="newEventText" />
+        <input type="text" placeholder="Beschreibung" [(ngModel)]="newEventDesc" />
+        <input type="datetime-local" [(ngModel)]="newEventDate" />
+
+        <!-- Nur Admins sehen Checkbox für öffentliche Events -->
+        <div *ngIf="isAdmin" class="public-event-checkbox">
+          <input type="checkbox" [(ngModel)]="isPublicEvent" id="publicCheckbox" />
+          <label for="publicCheckbox">Öffentliches Event</label>
+        </div><br>
+        <div *ngIf="isPublicEvent">
+          <label for="raumSelect"> Raum wählen (optional):</label>
+          <select id="raumSelect" [(ngModel)]="newEventRoom">
+            <option value="">— Bitte wählen —</option>
+            <option *ngFor="let raum of raumListe" [value]="raum">{{ raum }}</option>
+          </select>
+        </div>
+        <!-- Teilnehmerzahl wählen (optional) - Nur wenn Öffentliches Event aktiviert ist -->
+      <div *ngIf="isPublicEvent">
+        <label for="eventLimit">Teilnehmerzahl (optional):</label>
+       <select id="eventLimit" [(ngModel)]="newEventLimit">
+         <option value="">— Keine Begrenzung —</option>
+          <option *ngFor="let zahl of [].constructor(19); let i = index" [value]="i + 2">
+           {{ i + 2 }} Personen
+          </option>
+       </select>
+      </div>
+
+        <button (click)="addEvent()">➕ Hinzufügen</button>
+      </div>
+    </section>
+
+    <!-- Mitte: Eigene oder beigetretene Events -->
+    <section class="center-panel">
+      <div class="profil-bearbeiten-box" *ngIf="showProfileForm">
+        <h4> Profil bearbeiten</h4>
+      
+        <label>Neuer Name (optional):</label>
+        <input type="text" [(ngModel)]="newName" placeholder="Neuer Name" />
+      
+        <label>Avatar-URL (optional):</label>
+        <input type="text" [(ngModel)]="newAvatar" placeholder="Bild-URL" />
+      
+        <label>Neue E-Mail (optional):</label>
+        <input type="email" [(ngModel)]="newEmail" placeholder="Neue E-Mail" />
+      
+        <label>Aktuelles Passwort:</label><br />
+<div style="display: flex; align-items: center;">
+  <input
+    [type]="showPassword ? 'text' : 'password'"
+    [(ngModel)]="currentPassword"
+    name="currentPassword"
+  />
+  <button type="button" (click)="showPassword = !showPassword" style="margin-left: 5px;">
+    {{ showPassword ? '🚫' : '👁' }}
+  </button>
+</div>
+
+        <label>Neues Passwort:</label><br />
+        <div style="display: flex; align-items: center;">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            [(ngModel)]="newPassword"
+            name="newPassword"
+          />
+          <button type="button" (click)="showPassword = !showPassword" style="margin-left: 5px;">
+            {{ showPassword ? '🚫' : '👁' }}
+          </button>
+        </div>
+        
+      
+        <button class="nav-btn" (click)="updateProfile()">☑ Speichern</button>
+      
+        <p class="success" *ngIf="profileSuccess">{{ profileSuccess }}</p>
+        <p class="error" *ngIf="profileError">{{ profileError }}</p>
+      </div>
+      
+      <h3>Meine Events</h3>
+      <ul class="task-list">
+        <ng-container *ngFor="let event of myEvents()">
+          <li [class.favorite]="event.favorite">
+            <span [class.completed]="event.completed">
+              <button class="favorite-btn" (click)="toggleFavorite(event)">
+                {{ event.favorite ? '⭐' : '☆' }}
+              </button>
+              🗓 ⏱ {{ event.date | date:'dd.MM.yyyy, HH:mm' }}
+              - <strong>{{ event.title }}</strong>
+              <span class="creator"><br>(von {{ event.createdBy }})</span><br />
+              📝 {{ event.description }}
+            </span>
+            <div *ngIf="event.raum"> Raum: <strong>{{ event.raum }}</strong></div>
+            <div *ngIf="event.limit" class="teilnehmer-info">
+             Teilnehmer: {{ event.participants.length }} / {{ event.limit }}
+
+            </div>
+            <!-- Wenn Benutzer der Ersteller ist oder Event privat ist -->
+            <div class="actions">
+              <ng-container *ngIf="event.userEmail === userEmail && (!event.isPublic || isAdmin); else readonlyView">
+                <button (click)="toggleCompleted(event)">☑</button>
+                <button (click)="editEvent(event)">✎</button>
+                <button (click)="deleteEvent(event.id)">🗑️</button>
+              </ng-container>
+              <ng-template #readonlyView>
+                <button *ngIf="event.participants?.includes(userName)" (click)="leaveEvent(event)">➖ Teilnahme zurückziehen</button>
+              </ng-template>
+            </div>
+            <!-- Teilnehmerliste anzeigen -->
+<div *ngIf="event.participants && event.participants.length > 0" class="participants-list">
+  <p><strong>Teilnehmer:</strong></p>
+  <ul>
+    <li *ngFor="let participant of event.participants">
+      {{ participant }}
+      <button *ngIf="isAdmin" (click)="removeParticipant(event, participant)">X</button>
+    </li>
+  </ul>
+</div>
+
+             <!-- Event bearbeiten form -->
+          <div *ngIf="event.editing" class="edit-area">
+            <input type="text" [(ngModel)]="editText" placeholder="Titel" />
+            <input type="text" [(ngModel)]="editDesc" placeholder="Beschreibung" />
+            <input type="datetime-local" [(ngModel)]="editDate" />
+           <!-- Raum bearbeiten (nur wenn Öffentlich) -->
+      <div *ngIf="event.isPublic">
+       <label for="editRaum"> Raum ändern (optional):</label>
+        <select id="editRaum" [(ngModel)]="editRoom">
+          <option value="">— Bitte wählen —</option>
+          <option *ngFor="let raum of raumListe" [value]="raum">{{ raum }}</option>
+        </select>
+      </div>
+         <!-- Teilnehmerzahl bearbeiten (nur wenn Öffentlich) -->
+      <div *ngIf="event.isPublic">
+        <label for="editLimit">Teilnehmerzahl ändern (optional):</label>
+       <select id="editLimit" [(ngModel)]="editLimit">
+          <option value="">— Keine Begrenzung —</option>
+         <option *ngFor="let zahl of [].constructor(19); let i = index" [value]="i + 2">
+           {{ i + 2 }} Personen
+          </option>
+        </select>
+      </div>
+            <button (click)="saveEvent(event)">☑ Speichern</button>
+            <button (click)="cancelEdit(event)">❌ Abbrechen</button>
+          </div>
+          </li>
+        </ng-container>
+      </ul>
+    </section>
+
+    <!-- Rechte Seite: Öffentliche Events (nicht teilgenommen) -->
+    <section class="right-panel">
+      <h3>⚪ Öffentliche Events</h3>
+      <ul class="task-list">
+        <ng-container *ngFor="let event of publicEvents()">
+          <li>
+            <span>
+              🗓 ⏱ {{ event.date | date:'dd.MM.yyyy, HH:mm' }}
+              - <strong>{{ event.title }}</strong>
+              <span class="creator"><br>(von {{ event.createdBy }})</span><br />
+              📝 {{ event.description }}
+            </span>
+
+            <div class="actions">
+              <button *ngIf="!event.participants?.includes(userName)" (click)="joinEvent(event)">➕ Teilnehmen</button>
+              <button *ngIf="event.participants?.includes(userName)" (click)="leaveEvent(event)">➖ Teilnahme zurückziehen</button>
+            </div>
+          </li>
+        </ng-container>
+      </ul>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,59 @@
+<!-- Überschrift der Registrierungsseite -->
+<h2>Registrieren</h2>
+
+<div class="form-container">
+  <!-- Formular zum Registrieren eines neuen Benutzers -->
+  <form (ngSubmit)="register()">
+    
+    <!-- Eingabefeld für die E-Mail-Adresse -->
+    <label for="email">E-Mail:</label><br />
+    <input type="email" id="email" [(ngModel)]="email" name="email" required /><br /><br />
+
+    <!-- Eingabefeld für das Passwort -->
+    <label for="password">Passwort:</label><br />
+    <div class="password-field">
+      <input 
+        [type]="showPassword ? 'text' : 'password'" 
+        id="password" 
+        [(ngModel)]="password" 
+        name="password" 
+        required 
+        minlength="6" 
+      /><br />
+      <!-- Button zum Anzeigen oder Verbergen des Passworts -->
+      <button type="button" (click)="showPassword = !showPassword">
+        {{ showPassword ? '🚫' : '👁' }}
+      </button>
+    </div><br />
+
+    <!-- Eingabefeld zum Bestätigen des Passworts -->
+    <label for="confirmPassword">Passwort bestätigen:</label><br />
+    <div class="password-field">
+      <input 
+        [type]="showConfirmPassword ? 'text' : 'password'" 
+        id="confirmPassword" 
+        [(ngModel)]="confirmPassword" 
+        name="confirmPassword" 
+        required 
+      /><br />
+      <!-- Button zum Anzeigen oder Verbergen des Bestätigungspassworts -->
+      <button type="button" (click)="showConfirmPassword = !showConfirmPassword">
+        {{ showConfirmPassword ? '🚫' : '👁' }}
+      </button>
+    </div><br />
+
+    <!-- Fehlermeldung wenn Passwörter nicht übereinstimmen -->
+    <p *ngIf="passwordMismatch" class="info-error">
+      Passwörter stimmen nicht überein.
+    </p>
+
+    <!-- Button zum Absenden des Formulars -->
+    <button type="submit" class="register-btn" [disabled]="passwordMismatch">Registrieren</button>
+  </form>
+
+  <!-- Erfolgsnachricht bei erfolgreicher Registrierung -->
+  <p *ngIf="successMessage" class="info-success">{{ successMessage }}</p>
+
+  <!-- Fehlermeldung bei Fehlern während der Registrierung -->
+  <p *ngIf="errorMessage" class="info-error">{{ errorMessage }}</p>
+</div>

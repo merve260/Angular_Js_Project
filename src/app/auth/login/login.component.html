@@ -1,0 +1,40 @@
+<div class="login-wrapper">
+  <!-- Überschrift des Portals -->
+  <h1>Polario Mitarbeiter Portal</h1>
+  <p>Organisieren. Verwalten. Teilnehmen.</p>
+  
+  <!-- Login-Überschrift -->
+  <h2>Login</h2>
+
+  <!-- Auswahl der Rolle (Benutzer oder Admin) -->
+  <div class="role-buttons">
+    <button (click)="selectRole('user')">👤 Benutzer Login</button>
+    <button (click)="selectRole('admin')">🛡️ Admin Login</button>
+  </div>
+
+  <!-- Link zur Registrierung -->
+  <div class="register-link">
+    <p>Noch keinen Account?</p>
+    <button (click)="goToRegister()">Registrieren</button>
+  </div>
+
+  <!-- Login-Formular, nur sichtbar wenn formVisible true ist -->
+  <div *ngIf="formVisible" class="login-form animate-fade-in">
+    <!-- Eingabefeld für E-Mail -->
+    <input type="email" [(ngModel)]="email" placeholder="E-Mail" />
+
+    <!-- Eingabefeld für Passwort -->
+    <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" placeholder="Passwort" />
+
+    <!-- Button zum Anzeigen oder Verbergen des Passworts -->
+    <button type="button" class="toggle-btn" (click)="showPassword = !showPassword">
+      {{ showPassword ? '🚫 Passwort verbergen' : '👁 Passwort anzeigen' }}
+    </button>
+
+    <!-- Button zum Einloggen -->
+    <button (click)="login()" class="login-btn">Einloggen</button>
+
+    <!-- Fehlermeldung bei Login-Fehlern -->
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+  </div>
+</div>

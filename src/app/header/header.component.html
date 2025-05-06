@@ -1,0 +1,14 @@
+<header *ngIf="showHeader && isAdmin">
+  <a [routerLink]="['/benutzer']">
+    <img src="/assets/task-management-logo.png" alt="Logo" />
+    <h1>Alle Benutzer</h1>
+  </a>
+
+  <a routerLink="/neu">
+    <button class="add-user-btn">➕ Benutzer hinzufügen</button>
+  </a>
+
+  <button (click)="logout()" class="logout-btn">
+    Abmelden
+  </button>
+</header>

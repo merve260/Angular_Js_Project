@@ -1,0 +1,42 @@
+<div class="top-bar">
+  <button (click)="goToDashboard()" class="dashboard-button">
+    🏠 Zum Dashboard
+  </button>
+</div>
+
+<div class="user-layout">
+  <div class="user-list">
+    <h2>Benutzerliste</h2>
+
+    <div class="filter-container">
+      <input type="text" placeholder="Nach Name filtern" [(ngModel)]="nameFilter" />
+      <input type="text" placeholder="Nach ID filtern" [(ngModel)]="idFilter" />
+    </div>
+
+    <div *ngIf="users.length; else ladeDaten">
+      <div *ngFor="let user of filteredUsers()">
+        <a class="user-btn"
+            (click)="navigateToUser(user.id)"
+            [class.active]="user.id === selectedId">
+          <img [src]="user.avatar" alt="{{ user.name }}" />
+          <span>{{ user.name }}</span>
+        </a>
+
+      </div>
+    </div>
+
+    <ng-template #ladeDaten>
+      <p>Daten werden geladen...</p>
+    </ng-template>
+  </div>
+
+  <div class="user-detail">
+    <router-outlet></router-outlet>
+  </div>
+  
+  
+  
+  
+  
+  
+</div>

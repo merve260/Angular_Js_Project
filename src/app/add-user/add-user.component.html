@@ -1,0 +1,51 @@
+<h2>Neuen Benutzer hinzufügen</h2>
+
+<!-- Formular zum Hinzufügen eines neuen Benutzers -->
+<form (ngSubmit)="addUser()">
+
+  <!-- Auswahl der Benutzerrolle -->
+  <label>
+    Rolle wählen:
+    <select [(ngModel)]="role" name="role">
+      <option value="user">Benutzer</option>
+      <option value="admin">Admin</option>
+    </select>
+  </label>
+  
+  <!-- Eingabefeld für den Namen -->
+  <label>Name:</label><br />
+  <input type="text" [(ngModel)]="name" name="name" /><br />
+  
+  <!-- Hinweis bei zu kurzem Namen -->
+  <small *ngIf="name.length > 0 && name.length < 5" style="color: red;">
+    Mindestens 5 Zeichen erforderlich
+  </small><br />
+  
+  <!-- Eingabefeld für die Avatar-URL (optional) -->
+  <label>Avatar URL (optional):</label><br />
+  <input type="text" [(ngModel)]="avatar" name="avatar" /><br />
+  
+  <!-- Eingabefeld für die Beschreibung -->
+  <label>Beschreibung:</label><br />
+  <textarea [(ngModel)]="beschreibung" name="beschreibung"></textarea><br />
+  
+  <!-- Hinweis bei zu kurzer Beschreibung -->
+  <small *ngIf="beschreibung.length > 0 && beschreibung.length < 5" style="color: red;">
+    Mindestens 5 Zeichen erforderlich
+  </small><br />
+  <!-- Eingabefeld für E-Mail (erforderlich) -->
+<label>E-Mail:</label><br />
+<input type="email" [(ngModel)]="email" name="email" required /><br />
+
+<!-- Eingabefeld für Passwort (erforderlich) -->
+<label>Passwort:</label><br />
+<input type="password" [(ngModel)]="newPassword" name="password" required /><br />
+<small *ngIf="newPassword.length > 0 && newPassword.length < 6" style="color: red;">
+  Mindestens 6 Zeichen erforderlich
+</small><br />
+
+  <!-- Button zum Hinzufügen des Benutzers -->
+  <button type="submit" class="add-user-btn">Benutzer hinzufügen</button><br><br>
+  <button type="submit" class="add-user-btn" (click)="abbrechen()">Abbrechen</button>
+
+</form>
