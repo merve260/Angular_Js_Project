@@ -1,5 +1,5 @@
 
-# Projektbeschreibung: Polario Mitarbeiter Portal
+# Projektbeschreibung: Mitarbeiter Portal
 
 ## Inhaltsverzeichnis
 
@@ -77,7 +77,7 @@ Für einen klaren Ablauf wurde **ein PseudoCode-Dokument** erstellt:
 ## Projektstruktur
 
 ```
-my_Project_Polario/
+Angular_Js_Project/
 │
 ├── backend/                  # Node.js Backend
 │   ├── index.js              # Server-Einstiegspunkt
@@ -109,7 +109,7 @@ my_Project_Polario/
 ### Frontend starten
 
 ```bash
-cd Polario_MerveKoc
+cd Angular_Js_Project
 npm install
 ng serve
 ```
